@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <div class="container mx-auto">
+        <div class="hero bg-base-200">
+            <div class="hero-content text-center h-[30vh]">
+                <div class="max-w-md">
+                    <h1 class="text-7xl font-bold"> Explore the Projects </h1>
+
+                </div>
+            </div>
+        </div>
+        <%- include('partials/navbar', {page: '/'}) %>
+        <div class="flex justify-center">
+            <div id="projects" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3">
+            </div>
+            <script>
+                async function getProjects(category) {
+                    const projectsDiv = document.getElementById('projects');
+                    try {
+                        const response = await fetch(`/solutions/projects?sector=${category}`);
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        const data = await response.json();
+
+                        // Clear previous projects
+                        projectsDiv.innerHTML = '';
+
+                        if (data.length === 0) {
+                            projectsDiv.innerHTML = `<p>No projects found in the ${category} category.</p>`;
+                            return;
+                        }
+
+                        data.forEach(project => {
+                            const card = document.createElement('div');
+                            card.className = 'project';
+                            card.innerHTML = `
+                                <div class="card w-96 bg-base-100 shadow-xl">
+                                    <figure>
+                                        <img class="w-full" src="${project.feature_img_url}" alt="${project.title}" />
+                                    </figure>
+                                    <div class="card-body">
+                                        <h2 class="card-title">${project.title}</h2>
+                                        <p>${project.summary_short}</p>
+                                        <div class="card-actions justify-end">
+                                            <a href="/solutions/projects/${project.id}" class="btn btn-primary">View Project</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                            projectsDiv.appendChild(card);
+                        });
+                    } catch (error) {
+                        projectsDiv.innerHTML = `<p>Error fetching projects</p>`;
+                        console.error('There has been a problem with your fetch operation:', error);
+                    }
+                }
+            </script>
+        </div>
+    </div>
+<script>
+async function getProjects(category) {
+    const projectsDiv = document.getElementById('projects');
+    try {
+        const response = await fetch(`/solutions/projects?sector=${category}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+
+        // Clear previous projects
+        projectsDiv.innerHTML = '';
+
+        if (data.length === 0) {
+            projectsDiv.innerHTML = `<p>No projects found in the ${category} category.</p>`;
+            return;
+        }
+
+        data.forEach(project => {
+            const card = document.createElement('div');
+            card.className = 'project';
+            card.innerHTML = `
+                <div class="card w-96 bg-base-100 shadow-xl">
+                    <figure>
+                        <img class="w-full" src="${project.feature_img_url}" alt="${project.title}" />
+                    </figure>
+                    <div class="card-body">
+                        <h2 class="card-title">${project.title}</h2>
+                        <p>${project.summary_short}</p>
+                        <div class="card-actions justify-end">
+                            <a href="/solutions/projects/${project.id}" class="btn btn-primary">View Project</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            projectsDiv.appendChild(card);
+        });
+    } catch (error) {
+        projectsDiv.innerHTML = `<p>Error fetching projects</p>`;
+        console.error('There has been a problem with your fetch operation:', error);
+    }
+}
+</script>
+</body>
+</html>

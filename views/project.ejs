@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= project.title %></title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <div class="container mx-auto">
+        <div class="hero bg-base-200 h-[30vh]">
+            <div class="hero-content text-center">
+                <div class="max-w-md">
+                    <h1 class="text-5xl font-bold"><%= project.title %></h1>
+                    <p class="py-6">Below, you will find detailed information about the project: <%= project.title %></p>
+                </div>
+            </div>
+        </div>
+        <%- include('partials/navbar', {page: ''}) %>
+
+        <div class="container mx-auto p-8">
+            <div class="card bg-base-100 shadow-xl">
+                <figure class="px-10 pt-10">
+                    <img src="<%= project.feature_img_url %>" alt="<%= project.title %>" class="rounded-xl" />
+                </figure>
+                <div class="card-body">
+                    <h2 class="card-title">Introduction</h2>
+                    <p><%= project.intro_short %></p>
+                    
+                    <h2 class="card-title mt-6">Impact</h2>
+                    <p><%= project.impact %></p>
+
+                    <div class="divider"></div>
+
+                    <div id="quote" class="bg-base-200 p-4 rounded-lg">
+                        <p class="italic">Loading quote...</p>
+                    </div>
+
+                    <div class="card-actions justify-end mt-6">
+                        <a href="<%= project.original_source_url %>" target="_blank" class="btn btn-primary">Learn More</a>
+                        <a href="#" onclick="history.back(); return false;" class="btn">Go Back</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            try {
+                const response = await fetch('https://dummyjson.com/quotes/random');
+                const data = await response.json();
+                const quoteElement = document.getElementById('quote');
+                quoteElement.innerHTML = `
+                    <p class="italic">"${data.quote}"</p>
+                    <p class="text-right mt-2">- ${data.author}</p>
+                `;
+            } catch (error) {
+                console.error('Error fetching quote:', error);
+                const quoteElement = document.getElementById('quote');
+                quoteElement.innerHTML = '<p>Failed to load quote</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>

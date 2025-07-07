@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <div class="container mx-auto">
+        <div class="hero bg-base-200">
+            <div class="hero-content text-center h-[30vh]">
+                <div class="max-w-md">
+                    <h1 class="text-5xl font-bold">Projects</h1>
+                    <br>
+                    <div class="mt-4 space-x-2">
+                        <a href="/solutions/projects?sector=Electricity" class="btn btn-primary">Electricity</a>
+                        <a href="/solutions/projects?sector=Transportation" class="btn btn-primary">Transportation</a>
+                        <a href="/solutions/projects?sector=Agriculture" class="btn btn-primary">Agriculture</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include('partials/navbar', {page: '/solutions/projects'}) %>
+
+        <div class="overflow-x-auto">
+            <% if (projects.length > 0) { %>
+            <table class="table table-zebra w-full">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Sector</th>
+                        <th>Summary</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% projects.forEach(function(project) { %>
+                    <tr>
+                        <td><%= project.title %></td>
+                        <td><a href="/solutions/projects?sector=<%= project.sector_name %>" class="btn btn-sm"><%= project.sector_name %></a></td>
+                        <td><%= project.summary_short %></td>
+                        <td><a href="/solutions/projects/<%= project.id %>" class="btn btn-sm">details</a></td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+            <% } else { %>
+            <p>No projects found, select another sector</p>
+            <% } %>
+        </div>
+    </div>
+</body>
+
+</html>
