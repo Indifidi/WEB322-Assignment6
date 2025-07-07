@@ -8,7 +8,7 @@
 * 
 *  Name: Daniel Kim Student ID: 100118231 Date: July 6, 2025
 *
-*  Published URL: ___________________________________________________________
+*  Published URL: https://web-322-assignment4-gold.vercel.app/
 *
 ********************************************************************************/
 
