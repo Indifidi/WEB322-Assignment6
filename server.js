@@ -91,6 +91,30 @@ app.get("/solutions/projects/:id", (req, res) => {
         });
 });
 
+//add project page
+app.get("/solutions/addProject", (req, res) => {
+    projectData
+        .getAllSectors()
+        .then((sectorData) => {
+            res.render("addProject", { sectors: sectorData });
+        })
+        .catch((error) => {
+            res.render("500", { message: `I'm sorry, but we have encountered the following error: ${error}` });
+        });
+});
+
+//add project form submission
+app.post("/solutions/addProject", (req, res) => {
+    projectData
+        .addProject(req.body)
+        .then(() => {
+            res.redirect("/solutions/projects");
+        })
+        .catch((error) => {
+            res.render("500", { message: `I'm sorry, but we have encountered the following error: ${error}` });
+        });
+});
+
 //404 page 
 app.use((req, res) => {
     res.status(404).render("404", { message: "No view matched for a specific route." });

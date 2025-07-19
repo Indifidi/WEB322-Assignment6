@@ -96,9 +96,25 @@ function getProjectsBySector(sector) {
     });
 }
 
+function getAllSectors (){
+    return Sector.findAll();
+}
+
+function addProject(projectData) {
+    return Project.create(projectData)
+        .then(() => {
+            return Promise.resolve();
+        })
+        .catch((err) => {
+            throw new Error(err.errors[0].message);
+        });
+}
+
 module.exports = {
     Initialize,
     getAllProjects,
     getProjectsById,
-    getProjectsBySector
+    getProjectsBySector,
+    getAllSectors,
+    addProject
 }
