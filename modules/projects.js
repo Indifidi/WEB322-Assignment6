@@ -122,6 +122,18 @@ function editProject(projectId, projectData) {
     });
 }
 
+function deleteProject (projectId) {
+    return Project.destroy({
+        where: { id: projectId }
+    })
+    .then(() => {
+        return Promise.resolve();
+    })
+    .catch((err) => {
+        throw new Error(err.errors[0].message);
+    });
+}
+
 module.exports = {
     Initialize,
     getAllProjects,
@@ -129,5 +141,6 @@ module.exports = {
     getProjectsBySector,
     getAllSectors,
     addProject,
-    editProject
+    editProject,
+    deleteProject
 }

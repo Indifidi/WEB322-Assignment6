@@ -143,6 +143,19 @@ app.post("/solutions/editProject", (req, res) => {
         });
 });
 
+//delete project
+app.get("/solutions/deleteProject/:id", (req, res) => {
+    const projectId = req.params.id;
+    projectData
+        .deleteProject(parseInt(projectId, 10))
+        .then(() => {
+            res.redirect("/solutions/projects");
+        })
+        .catch((err) => {
+            res.render("500", { message: `I'm sorry, but we have encountered the following error: ${err}` });
+        });
+});
+
 //404 page 
 app.use((req, res) => {
     res.status(404).render("404", { message: "No view matched for a specific route." });
