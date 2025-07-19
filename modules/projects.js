@@ -1,76 +1,98 @@
-const projectData = require("../data/projectData");
-const sectorData = require("../data/sectorData");
+require('dotenv').config();
+require('pg');
+const Sequelize = require('sequelize');
 
-let projects = [];
+
+
+let sequelize = new Sequelize(
+    process.env.PGDATABASE,
+    process.env.PGUSER,
+    process.env.PGPASSWORD,
+    {
+        host: process.env.PGHOST,
+        dialect: 'postgres',
+        dialectOptions: {
+            ssl: { rejectUnauthorized: false }
+        }
+    }
+);
+
+const Sector = sequelize.define('Sector', {
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    sector_name: Sequelize.STRING
+}, {
+    timestamps: false
+});
+
+
+const Project = sequelize.define('Project', {
+    id: {
+        type: Sequelize.INTEGER,
+        autoIncrement: true,
+        primaryKey: true
+    },
+    title: Sequelize.STRING,
+    feature_img_url: Sequelize.STRING,
+    summary_short: Sequelize.TEXT,
+    intro_short: Sequelize.TEXT,
+    impact: Sequelize.TEXT,
+    original_source_url: Sequelize.STRING,
+    sector_id: Sequelize.INTEGER
+}, {
+    timestamps: false
+});
+
+Project.belongsTo(Sector, { foreignKey: 'sector_id' });
 
 function Initialize() {
-
-    return new Promise((resolve, reject) => {
-        try {
-            
-            projectData.forEach((project) => {
-                const sectorFind = sectorData.find((sector) => sector.id === project.sector_id);         
-
-                const newProject = {
-                    ...project,
-                    sector_name: sectorFind ? sectorFind.sector_name : "Unknown Sector",
-                };
-
-                projects.push(newProject);
-            });
-            resolve();
-            resolve("Initialize projects....");
-        } catch (error) {
-            console.error("Error initialization", error);
-            reject;
-        }
-
-    });
+    return sequelize.sync()
+        .then(() => {
+            console.log("Database connected successfully.");
+            return Promise.resolve("Sequelize sync successful.");
+        })
+        .catch((error) => {
+            console.error("Database connection failed:");
+            return Promise.reject(error);
+        });
 }
 
 function getAllProjects() {
-    return new Promise((resolve, reject) => {
-        try {
-            if (projects.length === 0) {
-                throw new Error("No projects available.");
-            }
-            resolve(projects);
-        } catch (error) {
-            reject("No projects available.");
-        }
+    return Project.findAll({
+        include: [Sector]
     });
 }
 
 function getProjectsById(projectId) {
-  return new Promise((resolve, reject) => {
-    try {
-      const projectRes = projects.find((project) => project.id === projectId);
-
-      if (!projectRes) {
-        throw new Error(`unable to find requested project`);
-      }
-
-      resolve(projectRes);
-    } catch (error) {
-      reject("unable to find requested project");
-    }
-  });
+    return Project.findAll({
+        where: { id: projectId },
+        include: [Sector]
+    })
+    .then((projects) => {
+        if (!projects || projects.length === 0) {
+            throw new Error("Unable to find requested project");
+        }
+        return projects[0];
+    });
 }
 
 function getProjectsBySector(sector) {
-    return new Promise((resolve, reject) => {
-        try {
-            const projectsBySector = projects.filter((project) =>
-                project.sector_name.toLowerCase().includes(sector.toLowerCase())
-            );
-
-            if (projectsBySector.length === 0) {
-                throw new Error(`unable to find requested sectoss`);
+    return Project.findAll({
+        include: [Sector],
+        where: {
+            '$Sector.sector_name$': {
+                [Sequelize.Op.iLike]: `%${sector}%`
             }
-            resolve(projectsBySector);
-        } catch (error) {
-            reject(`unable to find requested sectors`);
         }
+    })
+    .then((projects) => {
+        if (!projects || projects.length === 0) {
+            throw new Error("Unable to find requested projects");
+        }
+        return projects;
     });
 }
 

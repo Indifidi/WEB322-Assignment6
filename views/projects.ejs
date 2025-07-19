@@ -44,7 +44,7 @@
                     <% projects.forEach(function(project) { %>
                     <tr>
                         <td><%= project.title %></td>
-                        <td><a href="/solutions/projects?sector=<%= project.sector_name %>" class="btn btn-sm"><%= project.sector_name %></a></td>
+                        <td><a href="/solutions/projects?sector=<%= project.Sector.sector_name %>" class="btn btn-sm"><%= project.Sector.sector_name %></a></td>
                         <td><%= project.summary_short %></td>
                         <td><a href="/solutions/projects/<%= project.id %>" class="btn btn-sm">details</a></td>
                     </tr>
