@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Project - <%= project.title %></title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <div class="container mx-auto">
+        <div class="hero bg-base-200">
+            <div class="hero-content text-center h-[30vh]">
+                <div class="max-w-md">
+                    <h1 class="text-5xl font-bold">Edit Project</h1>
+                    <p class="py-6">Editing: <%= project.title %></p>
+                </div>
+            </div>
+        </div>
+        <%- include('partials/navbar', {page: '' }) %>
+
+        <div class="container mx-auto p-8">
+            <div class="card bg-base-100 shadow-xl">
+                <div class="card-body">
+                    <form action="/solutions/editProject" method="POST">
+                        <input type="hidden" name="id" value="<%= project.id %>" />
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Title</span>
+                            </label>
+                            <input type="text" name="title" required class="input input-bordered" value="<%= project.title %>" />
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Feature Image URL</span>
+                            </label>
+                            <input type="url" name="feature_img_url" required class="input input-bordered" value="<%= project.feature_img_url %>" />
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Sector</span>
+                            </label>
+                            <select name="sector_id" required class="select select-bordered">
+                                <option value="">Select a sector</option>
+                                <% sectors.forEach(sector => { %>
+                                    <option <%= (project.sector_id == sector.id) ? "selected" : "" %> value="<%= sector.id %>">
+                                        <%= sector.sector_name %>
+                                    </option>
+                                <% }) %>
+                            </select>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Introduction</span>
+                            </label>
+                            <textarea name="intro_short" required class="textarea textarea-bordered" rows="4"><%= project.intro_short %></textarea>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Summary</span>
+                            </label>
+                            <textarea name="summary_short" required class="textarea textarea-bordered" rows="4"><%= project.summary_short %></textarea>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Impact</span>
+                            </label>
+                            <textarea name="impact" required class="textarea textarea-bordered" rows="4"><%= project.impact %></textarea>
+                        </div>
+
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Original Source URL</span>
+                            </label>
+                            <input type="url" name="original_source_url" required class="input input-bordered" value="<%= project.original_source_url %>" />
+                        </div>
+
+                        <div class="form-control mt-6">
+                            <button type="submit" class="btn btn-primary">Update Project</button>
+                            <a href="/solutions/deleteProject/<%= project.id %>" class="btn btn-error mt-2">Delete Project</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html> 

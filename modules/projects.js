@@ -110,11 +110,24 @@ function addProject(projectData) {
         });
 }
 
+function editProject(projectId, projectData) {
+    return Project.update(projectData, {
+        where: { id: projectId }
+    })
+    .then(() => {
+        return Promise.resolve();
+    })
+    .catch((err) => {
+        throw new Error(err.errors[0].message);
+    });
+}
+
 module.exports = {
     Initialize,
     getAllProjects,
     getProjectsById,
     getProjectsBySector,
     getAllSectors,
-    addProject
+    addProject,
+    editProject
 }

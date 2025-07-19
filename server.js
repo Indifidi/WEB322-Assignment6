@@ -115,6 +115,34 @@ app.post("/solutions/addProject", (req, res) => {
         });
 });
 
+//edit project page
+app.get("/solutions/editProject/:id", (req, res) => {
+    const projectId = req.params.id;
+    
+    Promise.all([
+        projectData.getProjectsById(parseInt(projectId, 10)),
+        projectData.getAllSectors()
+    ])
+    .then(([project, sectorData]) => {
+        res.render("editProject", { sectors: sectorData, project: project });
+    })
+    .catch((err) => {
+        res.status(404).render("404", { message: err.message });
+    });
+});
+
+//edit project form submission
+app.post("/solutions/editProject", (req, res) => {
+    projectData
+        .editProject(req.body.id, req.body)
+        .then(() => {
+            res.redirect("/solutions/projects");
+        })
+        .catch((error) => {
+            res.render("500", { message: `I'm sorry, but we have encountered the following error: ${error}` });
+        });
+});
+
 //404 page 
 app.use((req, res) => {
     res.status(404).render("404", { message: "No view matched for a specific route." });
