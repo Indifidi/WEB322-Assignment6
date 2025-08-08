@@ -16,6 +16,7 @@ const express = require("express");
 const path = require("path");
 const cors = require("cors");
 const projectData = require("./modules/projects");
+const authData = require ("./modules/auth-service");
 
 //create express app
 const app = express();
