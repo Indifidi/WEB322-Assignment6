@@ -1,1 +1,61 @@
-<h1>History</h1>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User History - Climate Solutions</title>
+    <link rel="stylesheet" href="/css/main.css">
+</head>
+
+<body>
+    <div class="container mx-auto">
+        <%- include('partials/navbar') %>
+
+
+        <div class="hero bg-base-200 h-[30vh]">
+            <div class="hero-content text-center">
+                    <div class="max-w-md">
+                        <h1 class="text-5xl font-bold">
+                            <%= session.user.userName %>
+                        </h1>
+                        <p class="py-6">User History: <%= session.user.email %>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mx-auto px-4 py-8">
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead>
+                            <tr>
+                                <th>Login Date/Time</th>
+                                <th>Client Information</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (loginHistory && loginHistory.length> 0) { %>
+                                <% loginHistory.forEach(function(login) { %>
+                                    <tr>
+                                        <td>
+                                            <%= new Date(login.dateTime).toString() %>
+                                        </td>
+                                        <td>
+                                            <%= login.userAgent %>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="2" class="text-center">No login history available</td>
+                                            </tr>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+</body>
+
+</html>

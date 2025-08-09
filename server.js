@@ -182,7 +182,9 @@ app.get("/register", (req, res) => {
 });
 
 //register form submission
+
 app.post("/register", (req, res) => {
+
     authData.registerUser(req.body)
         .then(() => {
             res.render("register", { errorMessage: "", successMessage: "User created", userName: "", page: "/register" });
@@ -214,6 +216,11 @@ app.post("/login", (req, res) => {
 app.get("/logout", (req, res) => {
     req.session.reset();
     res.redirect('/');
+});
+
+//user history page (protected route)
+app.get("/userHistory", ensureLogin, (req, res) => {
+    res.render("userHistory", { loginHistory: req.session.user.loginHistory, page: "/userHistory" });
 });
 
 //user history page (protected route)

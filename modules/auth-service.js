@@ -147,7 +147,7 @@ function checkUser (userData){
     })
 }
 
-module.export = {
+module.exports = {
     initialize,
     registerUser,
     checkUser
