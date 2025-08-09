@@ -17,6 +17,7 @@ const path = require("path");
 const cors = require("cors");
 const projectData = require("./modules/projects");
 const authData = require ("./modules/auth-service");
+const clientSessions = require ("client-sessions");
 
 //create express app
 const app = express();
@@ -33,6 +34,32 @@ app.set("views", path.join(__dirname, "views"));
 app.use(cors()); //allow cross-origin requests
 app.use(express.json()); //parse JSON bodies
 app.use(express.urlencoded({ extended: true })); //parse URL-encoded bodies forms
+app.use(clientSessions({
+    cookieName: "session",
+    secret: process.env.SESSION_SECRET,
+    duration: 10 * 60 * 1000, // 10 minutes
+    activeDuration: 1000 * 60, // 1 minute
+    cookie: {
+        ephemeral: false,       // delete cookie when browser closes?
+        httpOnly: true,         // restrict access from JavaScript
+        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        maxAge: 30 * 60 * 1000  // how long the cookie stays valid
+  }
+}));
+
+app.use((req, res, next) => {
+  res.locals.session = req.session;
+  next();
+});
+
+//helper middleware to ensure user is logged in
+function ensureLogin(req, res, next) {
+    if (!req.session.user) {
+        res.redirect("/login");
+    } else {
+        next();
+    }
+}
 
 //serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
@@ -82,7 +109,7 @@ app.get("/solutions/projects/:id", (req, res) => {
 });
 
 //add project page
-app.get("/solutions/addProject", (req, res) => {
+app.get("/solutions/addProject", ensureLogin, (req, res) => {
     projectData
         .getAllSectors()
         .then((sectorData) => {
@@ -94,7 +121,7 @@ app.get("/solutions/addProject", (req, res) => {
 });
 
 //add project form submission
-app.post("/solutions/addProject", (req, res) => {
+app.post("/solutions/addProject", ensureLogin, (req, res) => {
     projectData
         .addProject(req.body)
         .then(() => {
@@ -106,7 +133,7 @@ app.post("/solutions/addProject", (req, res) => {
 });
 
 //edit project page
-app.get("/solutions/editProject/:id", (req, res) => {
+app.get("/solutions/editProject/:id", ensureLogin, (req, res) => {
     const projectId = req.params.id;
     
     Promise.all([
@@ -122,7 +149,7 @@ app.get("/solutions/editProject/:id", (req, res) => {
 });
 
 //edit project form submission
-app.post("/solutions/editProject", (req, res) => {
+app.post("/solutions/editProject", ensureLogin, (req, res) => {
     projectData
         .editProject(req.body.id, req.body)
         .then(() => {
@@ -134,7 +161,7 @@ app.post("/solutions/editProject", (req, res) => {
 });
 
 //delete project
-app.get("/solutions/deleteProject/:id", (req, res) => {
+app.get("/solutions/deleteProject/:id", ensureLogin, (req, res) => {
     const projectId = req.params.id;
     projectData
         .deleteProject(parseInt(projectId, 10))
@@ -156,7 +183,7 @@ projectData.initialize()
 .then(authData.initialize)
 .then(function(){
     app.listen(port, function(){
-        console.log(`app listening on:  ${port}`);
+        console.log(`app listening on:  http://localhost:${port}`);
     });
 }).catch(function(err){
     console.log(`unable to start server: ${err}`);
