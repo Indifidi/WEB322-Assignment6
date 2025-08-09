@@ -48,7 +48,7 @@ const Project = sequelize.define('Project', {
 
 Project.belongsTo(Sector, { foreignKey: 'sector_id' });
 
-function Initialize() {
+function initialize() {
     return sequelize.sync()
         .then(() => {
             console.log("Database connected successfully.");
@@ -135,7 +135,7 @@ function deleteProject (projectId) {
 }
 
 module.exports = {
-    Initialize,
+    initialize,
     getAllProjects,
     getProjectsById,
     getProjectsBySector,

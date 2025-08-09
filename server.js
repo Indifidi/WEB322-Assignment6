@@ -8,7 +8,7 @@
 * 
 *  Name: Daniel Kim Student ID: 100118231 Date: July 19, 2025
 *
-*  Published URL: https://web-322-assignment5-git-main-daniel-kims-projects-8aec376b.vercel.app/
+*  Published URL: 
 *
 ********************************************************************************/
 
@@ -20,7 +20,7 @@ const authData = require ("./modules/auth-service");
 
 //create express app
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.HTTP_PORT || 3000;
 
 //setting up the server
 //set view engine to ejs
@@ -36,16 +36,6 @@ app.use(express.urlencoded({ extended: true })); //parse URL-encoded bodies form
 
 //serve static files from the public directory
 app.use(express.static(path.join(__dirname, "public")));
-
-//initialize projects
-projectData
-    .Initialize()
-    .then(() => {
-        console.log("Projects initialized successfully.");
-    })
-    .catch((error) => {
-        console.error("Error initializing projects:");
-    });
 
 //routes
 //home page
@@ -162,8 +152,15 @@ app.use((req, res) => {
 });
 
 //start the server
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
+projectData.initialize()
+.then(authData.initialize)
+.then(function(){
+    app.listen(port, function(){
+        console.log(`app listening on:  ${port}`);
+    });
+}).catch(function(err){
+    console.log(`unable to start server: ${err}`);
 });
+
 
 
