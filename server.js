@@ -6,9 +6,9 @@
 * 
 *  https://www.senecapolytechnic.ca/about/policies/academic-integrity-policy.html
 * 
-*  Name: Daniel Kim Student ID: 100118231 Date: July 19, 2025
+*  Name: Daniel Kim Student ID: 100118231 Date: Aug 13, 2025
 *
-*  Published URL: 
+*  Published URL: https://web-322-assignment6-two.vercel.app/
 *
 ********************************************************************************/
 
@@ -42,7 +42,7 @@ app.use(clientSessions({
     cookie: {
         ephemeral: false,       // delete cookie when browser closes?
         httpOnly: true,         // restrict access from JavaScript
-        secure: process.env.NODE_ENV === 'production', // HTTPS only in production
+        secure: false, // HTTPS only in production
         maxAge: 30 * 60 * 1000  // how long the cookie stays valid
   }
 }));
