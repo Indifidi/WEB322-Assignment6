@@ -173,6 +173,54 @@ app.get("/solutions/deleteProject/:id", ensureLogin, (req, res) => {
         });
 });
 
+app.get("/login", (req, res) => {
+    res.render("login", { errorMessage: "", userName: "", page: "/login" });
+});
+
+app.get("/register", (req, res) => {
+    res.render("register", { errorMessage: "", successMessage: "", userName: "", page: "/register" });
+});
+
+//register form submission
+app.post("/register", (req, res) => {
+    authData.registerUser(req.body)
+        .then(() => {
+            res.render("register", { errorMessage: "", successMessage: "User created", userName: "", page: "/register" });
+        })
+        .catch((err) => {
+            res.render("register", { errorMessage: err, successMessage: "", userName: req.body.userName, page: "/register" });
+        });
+});
+
+//login form submission
+app.post("/login", (req, res) => {
+    req.body.userAgent = req.get('User-Agent');
+    
+    authData.checkUser(req.body)
+        .then((user) => {
+            req.session.user = {
+                userName: user.userName,
+                email: user.email,
+                loginHistory: user.loginHistory
+            };
+            res.redirect('/solutions/projects');
+        })
+        .catch((err) => {
+            res.render("login", { errorMessage: err, userName: req.body.userName, page: "/login" });
+        });
+});
+
+//logout route
+app.get("/logout", (req, res) => {
+    req.session.reset();
+    res.redirect('/');
+});
+
+//user history page (protected route)
+app.get("/userHistory", ensureLogin, (req, res) => {
+    res.render("userHistory", { loginHistory: req.session.user.loginHistory, page: "/userHistory" });
+});
+
 //404 page 
 app.use((req, res) => {
     res.status(404).render("404", { message: "No view matched for a specific route." });
